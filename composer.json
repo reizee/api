@@ -1,0 +1,10 @@
+{
+    "name": "reizee/api",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Reizee\\Api\\": "src/"
+        }
+    },
+    "require": {}
+}
