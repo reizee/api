@@ -6,5 +6,15 @@
             "Reizee\\Api\\": "src/"
         }
     },
-    "require": {}
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Reizee\\Api\\ReizeeApiServiceProvider"
+            ],
+            "aliases": {
+                "ReizeeApi": "Reizee\\Api\\Facades\\ReizeeApi"
+            }
+        }
+    }
 }

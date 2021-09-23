@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright   2021 Reizee, All  rights reserved.
  * @author      Reizee\Api\ReizeeApi
@@ -79,6 +80,28 @@ class Contacts extends Api
      *
      * @return array|mixed
      */
+    public function getFirst($search = '', $start = 0, $limit = 0, $orderBy = '', $orderByDir = 'ASC', $publishedOnly = false, $minimal = false)
+    {
+        $result = $this->getIdentified($search, $start, $limit, $orderBy, $orderByDir, $publishedOnly, $minimal);
+        if ($result && isset($result['total']) && $result['total'] > 0 && count($result['contacts'])) {
+            $contacts = array_values($result['contacts']);
+            return  array_shift($contacts);
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @param string $search
+     * @param int    $start
+     * @param int    $limit
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param bool   $publishedOnly
+     * @param bool   $minimal
+     *
+     * @return array|mixed
+     */
     public function getIdentified($search = '', $start = 0, $limit = 0, $orderBy = '', $orderByDir = 'ASC', $publishedOnly = false, $minimal = false)
     {
         $search = ($search) ? "$search !is:anonymous" : '!is:anonymous';
@@ -93,7 +116,7 @@ class Contacts extends Api
      */
     public function getOwners()
     {
-        return $this->makeRequest($this->endpoint.'/list/owners');
+        return $this->makeRequest($this->endpoint . '/list/owners');
     }
 
     /**
@@ -103,7 +126,7 @@ class Contacts extends Api
      */
     public function getFieldList()
     {
-        return $this->makeRequest($this->endpoint.'/list/fields');
+        return $this->makeRequest($this->endpoint . '/list/fields');
     }
 
     /**
@@ -113,7 +136,7 @@ class Contacts extends Api
      */
     public function getSegments()
     {
-        return $this->makeRequest($this->endpoint.'/list/segments');
+        return $this->makeRequest($this->endpoint . '/list/segments');
     }
 
     /**
@@ -140,7 +163,7 @@ class Contacts extends Api
         \DateTime $dateFrom = null,
         \DateTime $dateTo = null
     ) {
-        return $this->fetchActivity('/'.$id.'/activity', $search, $includeEvents, $excludeEvents, $orderBy, $orderByDir, $page, $dateFrom, $dateTo);
+        return $this->fetchActivity('/' . $id . '/activity', $search, $includeEvents, $excludeEvents, $orderBy, $orderByDir, $page, $dateFrom, $dateTo);
     }
 
     /**
@@ -214,7 +237,7 @@ class Contacts extends Api
             $parameters['filters']['dateTo'] = $dateTo->format('Y-m-d H:i:s');
         }
 
-        return $this->makeRequest($this->endpoint.$path, $parameters);
+        return $this->makeRequest($this->endpoint . $path, $parameters);
     }
 
     /**
@@ -241,7 +264,7 @@ class Contacts extends Api
 
         $parameters = array_filter($parameters);
 
-        return $this->makeRequest($this->endpoint.'/'.$id.'/notes', $parameters);
+        return $this->makeRequest($this->endpoint . '/' . $id . '/notes', $parameters);
     }
 
     /**
@@ -268,7 +291,7 @@ class Contacts extends Api
 
         $parameters = array_filter($parameters);
 
-        return $this->makeRequest($this->endpoint.'/'.$id.'/devices', $parameters);
+        return $this->makeRequest($this->endpoint . '/' . $id . '/devices', $parameters);
     }
 
     /**
@@ -280,7 +303,7 @@ class Contacts extends Api
      */
     public function getContactSegments($id)
     {
-        return $this->makeRequest($this->endpoint.'/'.$id.'/segments');
+        return $this->makeRequest($this->endpoint . '/' . $id . '/segments');
     }
 
     /**
@@ -292,7 +315,7 @@ class Contacts extends Api
      */
     public function getContactCompanies($id)
     {
-        return $this->makeRequest($this->endpoint.'/'.$id.'/companies');
+        return $this->makeRequest($this->endpoint . '/' . $id . '/companies');
     }
 
     /**
@@ -304,7 +327,7 @@ class Contacts extends Api
      */
     public function getContactCampaigns($id)
     {
-        return $this->makeRequest($this->endpoint.'/'.$id.'/campaigns');
+        return $this->makeRequest($this->endpoint . '/' . $id . '/campaigns');
     }
 
     /**
@@ -318,7 +341,7 @@ class Contacts extends Api
      */
     public function addPoints($id, $points, array $parameters = [])
     {
-        return $this->makeRequest('contacts/'.$id.'/points/plus/'.$points, $parameters, 'POST');
+        return $this->makeRequest('contacts/' . $id . '/points/plus/' . $points, $parameters, 'POST');
     }
 
     /**
@@ -332,7 +355,7 @@ class Contacts extends Api
      */
     public function subtractPoints($id, $points, array $parameters = [])
     {
-        return $this->makeRequest('contacts/'.$id.'/points/minus/'.$points, $parameters, 'POST');
+        return $this->makeRequest('contacts/' . $id . '/points/minus/' . $points, $parameters, 'POST');
     }
 
     /**
@@ -349,7 +372,7 @@ class Contacts extends Api
     public function addDnc($id, $channel = 'email', $reason = Contacts::MANUAL, $channelId = null, $comments = 'via API')
     {
         return $this->makeRequest(
-            'contacts/'.$id.'/dnc/'.$channel.'/add',
+            'contacts/' . $id . '/dnc/' . $channel . '/add',
             [
                 'reason'    => $reason,
                 'channelId' => $channelId,
@@ -370,7 +393,7 @@ class Contacts extends Api
     public function removeDnc($id, $channel = 'email')
     {
         return $this->makeRequest(
-            'contacts/'.$id.'/dnc/'.$channel.'/remove',
+            'contacts/' . $id . '/dnc/' . $channel . '/remove',
             [],
             'POST'
         );
@@ -387,7 +410,7 @@ class Contacts extends Api
     public function addUtm($id, $utmTags)
     {
         return $this->makeRequest(
-            'contacts/'.$id.'/utm/add',
+            'contacts/' . $id . '/utm/add',
             $utmTags,
             'POST'
         );
@@ -404,7 +427,7 @@ class Contacts extends Api
     public function removeUtm($id, $utmId)
     {
         return $this->makeRequest(
-            'contacts/'.$id.'/utm/'.$utmId.'/remove',
+            'contacts/' . $id . '/utm/' . $utmId . '/remove',
             [],
             'POST'
         );

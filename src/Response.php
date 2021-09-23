@@ -6,7 +6,7 @@
  * @see        https://reizee.com.br
  */
 
-namespace Reizee\Api\ReizeeApi;
+namespace Reizee\Api;
 
 use Reizee\Api\Exception\UnexpectedResponseFormatException;
 

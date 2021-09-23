@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright   2021 Reizee, All  rights reserved.
  * @author      Reizee\Api\ReizeeApi
@@ -8,6 +9,7 @@
 
 namespace Reizee\Api;
 
+use Reizee\Api\Auth\ApiAuth;
 use Reizee\Api\Auth\AuthInterface;
 use Reizee\Api\Exception\ContextNotFoundException;
 
@@ -16,6 +18,44 @@ use Reizee\Api\Exception\ContextNotFoundException;
  */
 class ReizeeApi
 {
+
+    private $config;
+    private $fieldMap;
+    private $version;
+
+    const CONTEXT_CONTACT = 'contacts';
+
+    public function __construct(string $version, array $config, array $fieldMap)
+    {
+        $this->config = $config;
+        $this->fieldMap = $fieldMap;
+        $this->version = $version;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    public function getFieldMap()
+    {
+        return $this->fieldMap;
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    public function authenticate()
+    {
+        // Initiate the auth object
+        $initAuth = new ApiAuth();
+
+        return  $initAuth->newAuth($this->getConfig(), $this->getVersion() === 'BasicAuth' ? $this->getVersion() : 'OAuth');
+    }
+
+
     /**
      * Get an API context object.
      *
@@ -33,10 +73,12 @@ class ReizeeApi
     {
         static $contexts = [];
 
+        // if(!empty$config['baseUrl'])
+
         $apiContext = ucfirst($apiContext);
 
         if (!isset($context[$apiContext])) {
-            $class = 'Reizee\Api\\Api\\'.$apiContext;
+            $class = 'Reizee\Api\\Api\\' . $apiContext;
 
             if (!class_exists($class)) {
                 throw new ContextNotFoundException("A context of '$apiContext' was not found.");
@@ -63,7 +105,11 @@ class ReizeeApi
     {
         $apiContext = ucfirst($apiContext);
 
-        $class = 'Reizee\Api\\Api\\'.$apiContext;
+        $class = 'Reizee\Api\\Api\\' . $apiContext;
+
+        if (!$baseUrl) {
+            $baseUrl = $this->getConfig()['baseUrl'] . '/api/';
+        }
 
         if (!class_exists($class)) {
             throw new ContextNotFoundException("A context of '$apiContext' was not found.");
