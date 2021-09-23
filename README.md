@@ -9,19 +9,19 @@
 You can install the API Library with the following command:
 
 ```bash
-composer require mautic/api-library
+composer require reizee/api-library
 ```
 
-## Mautic Setup
-The API must be enabled in Mautic. Within Mautic, go to the Configuration page (located in the Settings menu) and under API Settings enable
-Mautic's API. If you intend on using Basic Authentication, ensure you enable it. You can also choose which OAuth protocol to use here.  After saving the configuration, go to the API Credentials page
+## Reizee Setup
+The API must be enabled in Reizee. Within Reizee, go to the Configuration page (located in the Settings menu) and under API Settings enable
+Reizee's API. If you intend on using Basic Authentication, ensure you enable it. You can also choose which OAuth protocol to use here.  After saving the configuration, go to the API Credentials page
 (located in the Settings menu) and create a new client.  Enter the callback/redirect URI that the request will be sent from.  Click Apply
 then copy the Client ID and Client Secret to the application that will be using the API.
 
 ## Authorization
 
 ### Obtaining an access token
-The first step is to obtain authorization.  Mautic supports OAuth 1.0a and OAuth 2 however it is up to the administrator
+The first step is to obtain authorization.  Reizee supports OAuth 1.0a and OAuth 2 however it is up to the administrator
 to decide which is enabled.  Thus it is best to have a configuration option within your project for the administrator
 to choose what method should be used by your code.
 
@@ -31,7 +31,7 @@ to choose what method should be used by your code.
 // Bootup the Composer autoloader
 include __DIR__ . '/vendor/autoload.php';  
 
-use Mautic\Auth\ApiAuth;
+use Reizee\Auth\ApiAuth;
 
 session_start();
 
@@ -41,10 +41,10 @@ $callback  = '';
 
 // ApiAuth->newAuth() will accept an array of Auth settings
 $settings = [
-    'baseUrl'          => '',       // Base URL of the Mautic instance
+    'baseUrl'          => '',       // Base URL of the Reizee instance
     'version'          => 'OAuth2', // Version of the OAuth can be OAuth2 or OAuth1a. OAuth2 is the default value.
-    'clientKey'        => '',       // Client/Consumer key from Mautic
-    'clientSecret'     => '',       // Client/Consumer secret key from Mautic
+    'clientKey'        => '',       // Client/Consumer key from Reizee
+    'clientSecret'     => '',       // Client/Consumer secret key from Reizee
     'callback'         => '',       // Redirect URI/Callback URI for this script
 ];
 
@@ -97,7 +97,7 @@ Here is the BasicAuth version of the code above.
 // Bootup the Composer autoloader
 include __DIR__ . '/vendor/autoload.php';  
 
-use Mautic\Auth\ApiAuth;
+use Reizee\Auth\ApiAuth;
 
 session_start();
 
@@ -146,18 +146,18 @@ Now that you have an access token and the auth object, you can make API requests
 ```php
 <?php
 
-use Mautic\MauticApi;
+use Reizee\ReizeeApi;
 
 // Create an api context by passing in the desired context (Contacts, Forms, Pages, etc), the $auth object from above
-// and the base URL to the Mautic server (i.e. http://my-mautic-server.com/api/)
+// and the base URL to the Reizee server (i.e. http://my-reizee-server.com/api/)
 
-$api        = new MauticApi();
+$api        = new ReizeeApi();
 $contactApi = $api->newApi('contacts', $auth, $apiUrl);
 ```
 
 Supported contexts are currently:
 
-See the [developer documentation](https://developer.mautic.org).
+See the [developer documentation](https://developer.reizee.org).
 
 ### Retrieving items
 All of the above contexts support the following functions for retrieving items:
@@ -241,7 +241,7 @@ if (isset($response['errors'])) {
 ## Contributing
 
 ### Setting up your environment (automatically)
-In order to get started quickly, we recommend that you use [DDEV](https://ddev.readthedocs.io/en/stable/) which sets things up automatically for you. It clones [https://github.com/mautic/mautic](mautic/mautic), sets up a local instance for you, and connects the API library tests to that instance.
+In order to get started quickly, we recommend that you use [DDEV](https://ddev.readthedocs.io/en/stable/) which sets things up automatically for you. It clones [https://github.com/reizee/reizee](reizee/reizee), sets up a local instance for you, and connects the API library tests to that instance.
 
 To get started, run `ddev start`! Our first-run experience will guide you through the setup.
 
@@ -250,7 +250,7 @@ If you want to set up your local environment manually, ensure that you copy `/te
 
 ### Unit tests
 
-Configure the unit tests config before running the unit tests. The tests fire real API requests to a Mautic instance. 
+Configure the unit tests config before running the unit tests. The tests fire real API requests to a Reizee instance. 
 
 1. Ensure you have set up your local environment using the steps above.
 2. Run `composer test` to run the tests.
@@ -268,7 +268,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://webmecanik.com"><img src="https://avatars.githubusercontent.com/u/462477?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zdeno Kuzmany</b></sub></a><br /><a href="https://github.com/mautic/api-library/commits?author=kuzmany" title="Code">💻</a></td>
+    <td align="center"><a href="https://webmecanik.com"><img src="https://avatars.githubusercontent.com/u/462477?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zdeno Kuzmany</b></sub></a><br /><a href="https://github.com/reizee/api-library/commits?author=kuzmany" title="Code">💻</a></td>
   </tr>
 </table>
 
