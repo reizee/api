@@ -14,7 +14,7 @@ class ReizeeApiServiceProvider extends ServiceProvider
       $version  = $app->config->get('reizee.api.version');
 
       if (!$config = $app->config->get("reizee.api.{$version}")) {
-        throw new RequiredParameterMissingException("Reizee Config not found", 1);
+        throw new RequiredParameterMissingException("Reizee Config not found!", 1);
       }
 
       return new ReizeeApi($version, $config);
