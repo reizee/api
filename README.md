@@ -1,11 +1,13 @@
 # Usando a biblioteca de API para o Reizee
 
 ## Requirements
-* PHP 7.2 or newer
-* cURL support
-* Laravel 6+
+
+- PHP 7.2 or newer
+- cURL support
+- Laravel 6+
 
 ## Instalando
+
 Instale usando o seguinte comando:
 
 ```bash
@@ -17,11 +19,13 @@ Publique as configurações
 ```bash
 php artisan vendor:publish --provider="Reizee\Api\ReizeeApiServiceProvider" --tag="config"
 ```
+
 ## Autenticação
 
 ### Autenticação Básica
 
-A autenticação básica usa um usuário e senha comun da plataforma. Recomendamos que crie um específico para este fim. 
+A autenticação básica usa um usuário e senha comun da plataforma. Recomendamos que crie um específico para este fim.
+
 ## Configurações
 
 Você precisa ativar o recurso de API nas configurações do seu painel.
@@ -35,22 +39,27 @@ return [
     'api' => [
         'version' => 'BasicAuth',
         'BasicAuth' => [
-            'baseUrl'          => 'https://{SEUDOMINIO}.reizee.com.br',       
-            'userName'         => 'integracao@reizee.com.br',       
-            'password'         => 'SENHAAQUI', 
+            'baseUrl'          => 'https://{SEUDOMINIO}.reizee.com.br',
+            'userName'         => 'integracao@reizee.com.br',
+            'password'         => 'SENHAAQUI',
         ],
     ]
 ];
 
 ```
-## Como usar
 
+# Como usar
+
+## Criar um contato
 
 ```php
 <?php
 
-$initAuth = new ApiAuth();
-$auth     = $initAuth->newAuth($settings);
+// Faça a autenticação
+$auth = \ReizeeApi::authenticate();
+
+
+$api =  \ReizeeApi::newApi(\ReizeeApi::CONTEXT_CONTACT, $auth);
 
 // Initiate process for obtaining an access token; this will redirect the user to the $authorizationUrl and/or
 // set the access_tokens when the user is redirected back after granting authorization
@@ -79,6 +88,7 @@ try {
 ```
 
 ### Using Basic Authentication Instead
+
 Instead of messing around with OAuth, you may simply elect to use BasicAuth instead.
 
 Here is the BasicAuth version of the code above.
@@ -87,7 +97,7 @@ Here is the BasicAuth version of the code above.
 <?php
 
 // Bootup the Composer autoloader
-include __DIR__ . '/vendor/autoload.php';  
+include __DIR__ . '/vendor/autoload.php';
 
 use Reizee\Auth\ApiAuth;
 
@@ -95,7 +105,7 @@ session_start();
 
 // ApiAuth->newAuth() will accept an array of Auth settings
 $settings = [
-    'userName'   => '',             // Create a new user       
+    'userName'   => '',             // Create a new user
     'password'   => '',             // Make it a secure password
 ];
 
@@ -121,7 +131,9 @@ $auth     = $initAuth->newAuth($settings, 'BasicAuth');
  ];
 
 ```
+
 **Note:** You can also specify a CURLOPT_TIMEOUT in the request (default is set to wait indefinitely):
+
 ```php
 $initAuth = new ApiAuth();
 $auth     = $initAuth->newAuth($settings, 'BasicAuth');
@@ -131,7 +143,8 @@ $auth->setCurlTimeout($timeout);
 ```
 
 ## API Requests
-Now that you have an access token and the auth object, you can make API requests.  The API is broken down into contexts.
+
+Now that you have an access token and the auth object, you can make API requests. The API is broken down into contexts.
 
 ### Get a context object
 
@@ -152,6 +165,7 @@ Supported contexts are currently:
 See the [developer documentation](https://developer.reizee.org).
 
 ### Retrieving items
+
 All of the above contexts support the following functions for retrieving items:
 
 ```php
@@ -188,7 +202,6 @@ $contact  = $response[$contactApi->itemName()];
 ```
 
 ### Editing an item
-
 
 ```php
 <?php
@@ -233,5 +246,3 @@ if (isset($response['errors'])) {
 
 
 ```
-
-
