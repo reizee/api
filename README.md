@@ -50,199 +50,53 @@ return [
 
 # Como usar
 
-## Criar um contato
-
 ```php
 <?php
 
 // Faça a autenticação
 $auth = \ReizeeApi::authenticate();
 
+// Inicialize a API
+$api =  \ReizeeApi::newApi('contacts', $auth);
 
-$api =  \ReizeeApi::newApi(\ReizeeApi::CONTEXT_CONTACT, $auth);
+// Cria o contato e retorna o resultado
+$result = $api->create([
+            'email' => 'contato@reizee.com.br',
+            'firstname' => 'Reizee',
+            'tags' => ['tag-1', 'tag-2'],
+            'custom_field_x' => 'custom'
+        ]);
 
-// Initiate process for obtaining an access token; this will redirect the user to the $authorizationUrl and/or
-// set the access_tokens when the user is redirected back after granting authorization
 
-// If the access token is expired, and a refresh token is set above, then a new access token will be requested
+// Editar o contato e retorna o resultado
+$id = 1;
+$result = $api->edit($id ,[
+            'lastname' => 'Marketing',
+             // Adicione uma nova tag ou remova adicionando sinal de
+             // menos (-) antes do nome da tag
+            'tags' => ['tag-3', '-tag-2'],
+            'custom_field_x' => 'custom_alterado'
+        ]);
 
-try {
-    if ($auth->validateAccessToken()) {
 
-        // Obtain the access token returned; call accessTokenUpdated() to catch if the token was updated via a
-        // refresh token
+// Deletar um contato
+$id = 1;
+$result = $api->delete($id);
 
-        // $accessTokenData will have the following keys:
-        // For OAuth1.0a: access_token, access_token_secret, expires
-        // For OAuth2: access_token, expires, token_type, refresh_token
+// Para empresas o processo é o mesmo, só muda o contexto
 
-        if ($auth->accessTokenUpdated()) {
-            $accessTokenData = $auth->getAccessTokenData();
+// Inicialize a API
+$api =  \ReizeeApi::newApi('companies', $auth);
 
-            //store access token data however you want
-        }
-    }
-} catch (Exception $e) {
-    // Do Error handling
-}
+$result = $api->create([
+            'companyemail' => 'contato@reizee.com.br',
+            'companyname' => 'Reizee',
+            'tags' => ['tag-1', 'tag-2'],
+            'company_custom_field_x' => 'custom'
+        ]);
+// ...
+
+// Outros contextos podem ser usados, em breve atualizaremos nossa documentação
 ```
 
-### Using Basic Authentication Instead
 
-Instead of messing around with OAuth, you may simply elect to use BasicAuth instead.
-
-Here is the BasicAuth version of the code above.
-
-```php
-<?php
-
-// Bootup the Composer autoloader
-include __DIR__ . '/vendor/autoload.php';
-
-use Reizee\Auth\ApiAuth;
-
-session_start();
-
-// ApiAuth->newAuth() will accept an array of Auth settings
-$settings = [
-    'userName'   => '',             // Create a new user
-    'password'   => '',             // Make it a secure password
-];
-
-// Initiate the auth object specifying to use BasicAuth
-$initAuth = new ApiAuth();
-$auth     = $initAuth->newAuth($settings, 'BasicAuth');
-
-// Nothing else to do ... It's ready to use.
-// Just pass the auth object to the API context you are creating.
-```
-
-**Note:** If the credentials are incorrect an error response will be returned.
-
-```php
- [
-    'errors' => [
-        [
-            'code'    => 403,
-            'message' => 'access_denied: OAuth2 authentication required',
-            'type'    => 'access_denied',
-        ],
-    ],
- ];
-
-```
-
-**Note:** You can also specify a CURLOPT_TIMEOUT in the request (default is set to wait indefinitely):
-
-```php
-$initAuth = new ApiAuth();
-$auth     = $initAuth->newAuth($settings, 'BasicAuth');
-$timeout  = 10;
-
-$auth->setCurlTimeout($timeout);
-```
-
-## API Requests
-
-Now that you have an access token and the auth object, you can make API requests. The API is broken down into contexts.
-
-### Get a context object
-
-```php
-<?php
-
-use Reizee\ReizeeApi;
-
-// Create an api context by passing in the desired context (Contacts, Forms, Pages, etc), the $auth object from above
-// and the base URL to the Reizee server (i.e. http://my-reizee-server.com/api/)
-
-$api        = new ReizeeApi();
-$contactApi = $api->newApi('contacts', $auth, $apiUrl);
-```
-
-Supported contexts are currently:
-
-See the [developer documentation](https://developer.reizee.org).
-
-### Retrieving items
-
-All of the above contexts support the following functions for retrieving items:
-
-```php
-<?php
-
-$response = $contactApi->get($id);
-$contact  = $response[$contactApi->itemName()];
-
-// getList accepts optional parameters for filtering, limiting, and ordering
-$response      = $contactApi->getList($filter, $start, $limit, $orderBy, $orderByDir);
-$totalContacts = $response['total'];
-$contact       = $response[$contactApi->listName()];
-```
-
-### Creating an item
-
-```php
-<?php
-
-$fields = $contactApi->getFieldList();
-
-$data = array();
-
-foreach ($fields as $field) {
-    $data[$field['alias']] = $_POST[$field['alias']];
-}
-
-// Set the IP address the contact originated from if it is different than that of the server making the request
-$data['ipAddress'] = $ipAddress;
-
-// Create the contact
-$response = $contactApi->create($data);
-$contact  = $response[$contactApi->itemName()];
-```
-
-### Editing an item
-
-```php
-<?php
-
-$updatedData = [
-    'firstname' => 'Updated Name'
-];
-
-$response = $contactApi->edit($contactId, $updatedData);
-$contact  = $response[$contactApi->itemName()];
-
-// If you want to create a new contact in the case that $contactId no longer exists
-// $response will be populated with the new contact item
-$response = $contactApi->edit($contactId, $updatedData, true);
-$contact  = $response[$contactApi->itemName()];
-```
-
-### Deleting an item
-
-```php
-<?php
-
-$response = $contactApi->delete($contactId);
-$contact  = $response[$contactApi->itemName()];
-```
-
-### Error handling
-
-```php
-<?php
-
-// $response returned by an API call should be checked for errors
-$response = $contactApi->delete($contactId);
-
-if (isset($response['errors'])) {
-    foreach ($response['errors'] as $error) {
-        echo $error['code'] . ": " . $error['message'];
-    }
-}
-
-
-
-
-```
