@@ -12,13 +12,12 @@ class ReizeeApiServiceProvider extends ServiceProvider
     $this->app->bind('reizee_api', function ($app) {
 
       $version  = $app->config->get('reizee.api.version');
-      $fieldMap = $app->config->get('reizee.api.fieldMap');
 
       if (!$config = $app->config->get("reizee.api.{$version}")) {
         throw new RequiredParameterMissingException("Reizee Config not found", 1);
       }
 
-      return new ReizeeApi($version, $config, $fieldMap);
+      return new ReizeeApi($version, $config);
     });
   }
 

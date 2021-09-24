@@ -20,26 +20,20 @@ class ReizeeApi
 {
 
     private $config;
-    private $fieldMap;
     private $version;
 
     const CONTEXT_CONTACT = 'contacts';
+    const CONTEXT_COMPANY = 'companies';
 
-    public function __construct(string $version, array $config, array $fieldMap)
+    public function __construct(string $version, array $config)
     {
         $this->config = $config;
-        $this->fieldMap = $fieldMap;
         $this->version = $version;
     }
 
     public function getConfig()
     {
         return $this->config;
-    }
-
-    public function getFieldMap()
-    {
-        return $this->fieldMap;
     }
 
     public function getVersion()
