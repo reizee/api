@@ -6,57 +6,49 @@
 * Laravel 6+
 
 ## Instalando
-You can install the API Library with the following command:
+Instale usando o seguinte comando:
 
 ```bash
-composer require reizee/api-library
+composer require reizee/api
 ```
 
-## Reizee Setup
-The API must be enabled in Reizee. Within Reizee, go to the Configuration page (located in the Settings menu) and under API Settings enable
-Reizee's API. If you intend on using Basic Authentication, ensure you enable it. You can also choose which OAuth protocol to use here.  After saving the configuration, go to the API Credentials page
-(located in the Settings menu) and create a new client.  Enter the callback/redirect URI that the request will be sent from.  Click Apply
-then copy the Client ID and Client Secret to the application that will be using the API.
+Publique as configurações
 
-## Authorization
+```bash
+php artisan vendor:publish --provider="Reizee\Api\ReizeeApiServiceProvider" --tag="config"
+```
+## Autenticação
 
-### Obtaining an access token
-The first step is to obtain authorization.  Reizee supports OAuth 1.0a and OAuth 2 however it is up to the administrator
-to decide which is enabled.  Thus it is best to have a configuration option within your project for the administrator
-to choose what method should be used by your code.
+### Autenticação Básica
+
+A autenticação básica usa um usuário e senha comun da plataforma. Recomendamos que crie um específico para este fim. 
+## Configurações
+
+Você precisa ativar o recurso de API nas configurações do seu painel.
+
+Abra o arquivo `config/reizee.php` e configure conforme exemplo:
 
 ```php
 <?php
 
-// Bootup the Composer autoloader
-include __DIR__ . '/vendor/autoload.php';  
-
-use Reizee\Auth\ApiAuth;
-
-session_start();
-
-$publicKey = '';
-$secretKey = '';
-$callback  = '';
-
-// ApiAuth->newAuth() will accept an array of Auth settings
-$settings = [
-    'baseUrl'          => '',       // Base URL of the Reizee instance
-    'version'          => 'OAuth2', // Version of the OAuth can be OAuth2 or OAuth1a. OAuth2 is the default value.
-    'clientKey'        => '',       // Client/Consumer key from Reizee
-    'clientSecret'     => '',       // Client/Consumer secret key from Reizee
-    'callback'         => '',       // Redirect URI/Callback URI for this script
+return [
+    'api' => [
+        'version' => 'BasicAuth',
+        'BasicAuth' => [
+            'baseUrl'          => 'https://{SEUDOMINIO}.reizee.com.br',       
+            'userName'         => 'integracao@reizee.com.br',       
+            'password'         => 'SENHAAQUI', 
+        ],
+    ]
 ];
 
-/*
-// If you already have the access token, et al, pass them in as well to prevent the need for reauthorization
-$settings['accessToken']        = $accessToken;
-$settings['accessTokenSecret']  = $accessTokenSecret; //for OAuth1.0a
-$settings['accessTokenExpires'] = $accessTokenExpires; //UNIX timestamp
-$settings['refreshToken']       = $refreshToken;
-*/
+```
+## Como usar
 
-// Initiate the auth object
+
+```php
+<?php
+
 $initAuth = new ApiAuth();
 $auth     = $initAuth->newAuth($settings);
 
@@ -238,28 +230,4 @@ if (isset($response['errors'])) {
 }
 ```
 
-## Contributing
-
-### Setting up your environment (automatically)
-In order to get started quickly, we recommend that you use [DDEV](https://ddev.readthedocs.io/en/stable/) which sets things up automatically for you. It clones [https://github.com/reizee/reizee](reizee/reizee), sets up a local instance for you, and connects the API library tests to that instance.
-
-To get started, run `ddev start`! Our first-run experience will guide you through the setup.
-
-### Setting up your environment (manually)
-If you want to set up your local environment manually, ensure that you copy `/tests/local.config.php.dist` to `/tests/local.config.php`, and fill in the required settings. We recommend using the Basic Authentication method to get up and running quickly.
-
-### Unit tests
-
-Configure the unit tests config before running the unit tests. The tests fire real API requests to a Reizee instance. 
-
-1. Ensure you have set up your local environment using the steps above.
-2. Run `composer test` to run the tests.
-
-Modify this command to run a specific test: `composer test -- --filter testCreateGetAndDelete tests/Api/NotesTest.php`
-
-Modify this command to run all tests in one class: `composer test -- --filter test tests/Api/NotesTest.php`
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
