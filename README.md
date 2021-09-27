@@ -28,7 +28,7 @@ A autenticação básica usa um usuário e senha comun da plataforma. Recomendam
 
 ## Configurações
 
-Você precisa ativar o recurso de API nas configurações do seu painel.
+Você precisa ativar o recurso de API nas configurações do seu painel e habilitar autenticação básica.
 
 Abra o arquivo `config/reizee.php` e configure conforme exemplo:
 
