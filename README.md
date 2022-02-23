@@ -2086,7 +2086,7 @@ $api =  \ReizeeApi::newApi('campaigns', $auth);
 <?php
 
 //...
-$campaign = $campaignApi->get($id);
+$campaign = $api->get($id);
 ```
 ```json
 {
@@ -2182,7 +2182,7 @@ decisionPath|string/null|If the event is connected into an action, this will be 
 <?php
 // ...
 
-$campaigns = $campaignApi->getList($searchFilter, $start, $limit, $orderBy, $orderByDir, $publishedOnly, $minimal);
+$campaigns = $api->getList($searchFilter, $start, $limit, $orderBy, $orderByDir, $publishedOnly, $minimal);
 ```
 ```json
 {
@@ -2279,7 +2279,7 @@ This endpoint is basically an alias for the stats endpoint with 'campaign_leads'
 <?php
 // ...
 
-$response = $campaignApi->getContacts($campaignId, $start, $limit, $order, $where);
+$response = $api->getContacts($campaignId, $start, $limit, $order, $where);
 ```
 ```json
 {  
@@ -2318,7 +2318,7 @@ $data = array(
     'isPublished' => 1
 );
 
-$campaign = $campaignApi->create($data);
+$campaign = $api->create($data);
 ```
 Create a new campaign. To see more advanced example with campaing events and so on, see the unit tests.
 
@@ -2351,7 +2351,7 @@ Same as [Get Campaign](#get-campaign).
 
 $camnpaignId = 12;
 
-$campaign = $campaignApi->cloneCampaign($campaignId);
+$campaign = $api->cloneCampaign($campaignId);
 ```
 Clone an existing campaign. To see more advanced example with campaign events and so on, see the unit tests.
 
@@ -2381,7 +2381,7 @@ $data = array(
 // Create new a campaign of ID 1 is not found?
 $createIfNotFound = true;
 
-$campaign = $campaignApi->edit($id, $data, $createIfNotFound);
+$campaign = $api->edit($id, $data, $createIfNotFound);
 ```
 Edit a new campaign. Note that this supports PUT or PATCH depending on the desired behavior.
 
@@ -2421,7 +2421,7 @@ Same as [Get Campaign](#get-campaign).
 ```php
 <?php
 
-$campaign = $campaignApi->delete($id);
+$campaign = $api->delete($id);
 ```
 Delete a campaign.
 
@@ -2443,7 +2443,7 @@ Same as [Get Campaign](#get-campaign).
 <?php
 
 //...
-$response = $campaignApi->addContact($campaignId, $contactId);
+$response = $api->addContact($campaignId, $contactId);
 if (!isset($response['success'])) {
     // handle error
 }
